@@ -76,21 +76,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "theme-color", content: "#16A34A" },
+      { title: "AureoSense — Gestión educativa premium" },
+      {
+        name: "description",
+        content:
+          "AureoSense es la plataforma premium de gestión educativa para escuelas modernas: profesores, estudiantes y asistencia en un solo lugar.",
+      },
+      { property: "og:title", content: "AureoSense — Gestión educativa premium" },
+      {
+        property: "og:description",
+        content:
+          "Plataforma minimalista y elegante para gestionar tu escuela de principio a fin.",
+      },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "es_ES" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "AureoSense — Gestión educativa premium" },
+      {
+        name: "twitter:description",
+        content: "Gestión escolar minimalista, elegante y moderna.",
+      },
     ],
     links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
+      { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
