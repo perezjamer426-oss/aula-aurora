@@ -106,9 +106,9 @@ function RegisterScreen() {
     const { error: rpcError } = await supabase.rpc("register_director_institution", {
       _full_name: parsed.data.fullName,
       _institution_name: parsed.data.institutionName,
-      _institution_phone: parsed.data.institutionPhone || null,
-      _institution_address: parsed.data.institutionAddress || null,
-      _institution_country: parsed.data.institutionCountry || null,
+      _institution_phone: parsed.data.institutionPhone ?? "",
+      _institution_address: parsed.data.institutionAddress ?? "",
+      _institution_country: parsed.data.institutionCountry ?? "",
       _institution_type: parsed.data.institutionType,
     });
 
