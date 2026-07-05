@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 type Variant = "primary" | "secondary" | "ghost";
 type Size = "md" | "lg";
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ActionButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
   size?: Size;
   loading?: boolean;
@@ -28,7 +28,7 @@ const sizes: Record<Size, string> = {
 };
 
 /** Botón premium reutilizable con estados de carga. */
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+export const ActionButton = forwardRef<HTMLButtonElement, ActionButtonProps>(function ActionButton(
   {
     variant = "primary",
     size = "md",
