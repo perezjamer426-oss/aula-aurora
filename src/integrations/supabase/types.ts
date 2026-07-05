@@ -14,16 +14,142 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      institutions: {
+        Row: {
+          address: string | null
+          country: string | null
+          created_at: string
+          created_by: string
+          id: string
+          name: string
+          phone: string | null
+          type: Database["public"]["Enums"]["institution_type"]
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          country?: string | null
+          created_at?: string
+          created_by: string
+          id?: string
+          name: string
+          phone?: string | null
+          type?: Database["public"]["Enums"]["institution_type"]
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          country?: string | null
+          created_at?: string
+          created_by?: string
+          id?: string
+          name?: string
+          phone?: string | null
+          type?: Database["public"]["Enums"]["institution_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          institution_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name: string
+          id: string
+          institution_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          institution_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          institution_id: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          institution_id?: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          institution_id?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      register_director_institution: {
+        Args: {
+          _full_name: string
+          _institution_address: string
+          _institution_country: string
+          _institution_name: string
+          _institution_phone: string
+          _institution_type: Database["public"]["Enums"]["institution_type"]
+        }
+        Returns: string
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "director" | "teacher" | "student"
+      institution_type:
+        | "preescolar"
+        | "primaria"
+        | "secundaria"
+        | "preparatoria"
+        | "universidad"
+        | "otro"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +276,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["director", "teacher", "student"],
+      institution_type: [
+        "preescolar",
+        "primaria",
+        "secundaria",
+        "preparatoria",
+        "universidad",
+        "otro",
+      ],
+    },
   },
 } as const
