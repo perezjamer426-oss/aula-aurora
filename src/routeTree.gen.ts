@@ -15,6 +15,7 @@ import { Route as BienvenidaRouteImport } from './routes/bienvenida'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
+import { Route as AuthenticatedEstudiantesRouteImport } from './routes/_authenticated/estudiantes'
 
 const RegistrarInstitucionRoute = RegistrarInstitucionRouteImport.update({
   id: '/registrar-institucion',
@@ -45,12 +46,19 @@ const AuthenticatedPanelRoute = AuthenticatedPanelRouteImport.update({
   path: '/panel',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedEstudiantesRoute =
+  AuthenticatedEstudiantesRouteImport.update({
+    id: '/estudiantes',
+    path: '/estudiantes',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bienvenida': typeof BienvenidaRoute
   '/iniciar-sesion': typeof IniciarSesionRoute
   '/registrar-institucion': typeof RegistrarInstitucionRoute
+  '/estudiantes': typeof AuthenticatedEstudiantesRoute
   '/panel': typeof AuthenticatedPanelRoute
 }
 export interface FileRoutesByTo {
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
   '/bienvenida': typeof BienvenidaRoute
   '/iniciar-sesion': typeof IniciarSesionRoute
   '/registrar-institucion': typeof RegistrarInstitucionRoute
+  '/estudiantes': typeof AuthenticatedEstudiantesRoute
   '/panel': typeof AuthenticatedPanelRoute
 }
 export interface FileRoutesById {
@@ -67,6 +76,7 @@ export interface FileRoutesById {
   '/bienvenida': typeof BienvenidaRoute
   '/iniciar-sesion': typeof IniciarSesionRoute
   '/registrar-institucion': typeof RegistrarInstitucionRoute
+  '/_authenticated/estudiantes': typeof AuthenticatedEstudiantesRoute
   '/_authenticated/panel': typeof AuthenticatedPanelRoute
 }
 export interface FileRouteTypes {
@@ -76,6 +86,7 @@ export interface FileRouteTypes {
     | '/bienvenida'
     | '/iniciar-sesion'
     | '/registrar-institucion'
+    | '/estudiantes'
     | '/panel'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -83,6 +94,7 @@ export interface FileRouteTypes {
     | '/bienvenida'
     | '/iniciar-sesion'
     | '/registrar-institucion'
+    | '/estudiantes'
     | '/panel'
   id:
     | '__root__'
@@ -91,6 +103,7 @@ export interface FileRouteTypes {
     | '/bienvenida'
     | '/iniciar-sesion'
     | '/registrar-institucion'
+    | '/_authenticated/estudiantes'
     | '/_authenticated/panel'
   fileRoutesById: FileRoutesById
 }
@@ -146,14 +159,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPanelRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/estudiantes': {
+      id: '/_authenticated/estudiantes'
+      path: '/estudiantes'
+      fullPath: '/estudiantes'
+      preLoaderRoute: typeof AuthenticatedEstudiantesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedEstudiantesRoute: typeof AuthenticatedEstudiantesRoute
   AuthenticatedPanelRoute: typeof AuthenticatedPanelRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedEstudiantesRoute: AuthenticatedEstudiantesRoute,
   AuthenticatedPanelRoute: AuthenticatedPanelRoute,
 }
 
@@ -170,13 +192,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

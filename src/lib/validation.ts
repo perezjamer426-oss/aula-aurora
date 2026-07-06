@@ -71,5 +71,57 @@ export const registerSchema = z.object({
   institutionType: institutionTypeSchema,
 });
 
+export const studentStatusSchema = z.enum(["activo", "inactivo"]);
+
+export const studentSchema = z.object({
+  fullName: z
+    .string()
+    .trim()
+    .min(2, "Ingresa el nombre completo")
+    .max(160, "El nombre es demasiado largo"),
+  dni: z
+    .string()
+    .trim()
+    .max(40, "El DNI es demasiado largo")
+    .optional()
+    .or(z.literal("")),
+  grade: z
+    .string()
+    .trim()
+    .min(1, "Selecciona o escribe un grado")
+    .max(40, "El grado es demasiado largo"),
+  section: z
+    .string()
+    .trim()
+    .min(1, "Selecciona o escribe una sección")
+    .max(20, "La sección es demasiado larga"),
+  birthDate: z
+    .string()
+    .trim()
+    .optional()
+    .or(z.literal("")),
+  guardianName: z
+    .string()
+    .trim()
+    .max(160, "El nombre del apoderado es demasiado largo")
+    .optional()
+    .or(z.literal("")),
+  phone: z
+    .string()
+    .trim()
+    .max(40, "El teléfono es demasiado largo")
+    .optional()
+    .or(z.literal("")),
+  email: z
+    .string()
+    .trim()
+    .max(160, "El correo es demasiado largo")
+    .email("Ingresa un correo válido")
+    .optional()
+    .or(z.literal("")),
+  status: studentStatusSchema,
+});
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
+export type StudentInput = z.infer<typeof studentSchema>;

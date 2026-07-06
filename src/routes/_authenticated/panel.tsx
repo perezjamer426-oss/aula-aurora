@@ -147,25 +147,56 @@ function DirectorDashboard() {
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          {["Profesores", "Estudiantes", "Asistencia"].map((label) => (
-            <article
-              key={label}
-              className="rounded-2xl border border-border bg-card p-5 opacity-70"
-            >
-              <div className="flex items-center justify-between">
-                <h3 className="font-display text-sm font-semibold text-foreground">
-                  {label}
-                </h3>
-                <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                  Próximamente
-                </span>
-              </div>
-              <p className="mt-3 text-xs text-muted-foreground">
-                Este módulo estará disponible en un próximo paso.
-              </p>
-            </article>
-          ))}
+          {[
+            { label: "Profesores", to: null as string | null },
+            { label: "Estudiantes", to: "/estudiantes" },
+            { label: "Asistencia", to: null },
+          ].map(({ label, to }) => {
+            const enabled = Boolean(to);
+            const content = (
+              <>
+                <div className="flex items-center justify-between">
+                  <h3 className="font-display text-sm font-semibold text-foreground">
+                    {label}
+                  </h3>
+                  <span
+                    className={
+                      "rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider " +
+                      (enabled
+                        ? "bg-primary-soft text-primary"
+                        : "bg-muted text-muted-foreground")
+                    }
+                  >
+                    {enabled ? "Abrir" : "Próximamente"}
+                  </span>
+                </div>
+                <p className="mt-3 text-xs text-muted-foreground">
+                  {enabled
+                    ? "Registra, busca y organiza a los estudiantes."
+                    : "Este módulo estará disponible en un próximo paso."}
+                </p>
+              </>
+            );
+            return enabled ? (
+              <button
+                key={label}
+                type="button"
+                onClick={() => navigate({ to: to! })}
+                className="group rounded-2xl border border-border bg-card p-5 text-left transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[var(--shadow-glow)]"
+              >
+                {content}
+              </button>
+            ) : (
+              <article
+                key={label}
+                className="rounded-2xl border border-border bg-card p-5 opacity-70"
+              >
+                {content}
+              </article>
+            );
+          })}
         </div>
+
       </main>
     </div>
   );

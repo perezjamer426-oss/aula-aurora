@@ -85,6 +85,68 @@ export type Database = {
           },
         ]
       }
+      students: {
+        Row: {
+          birth_date: string | null
+          created_at: string
+          created_by: string
+          dni: string | null
+          email: string | null
+          full_name: string
+          grade: string
+          guardian_name: string | null
+          id: string
+          institution_id: string
+          phone: string | null
+          photo_url: string | null
+          section: string
+          status: Database["public"]["Enums"]["student_status"]
+          updated_at: string
+        }
+        Insert: {
+          birth_date?: string | null
+          created_at?: string
+          created_by: string
+          dni?: string | null
+          email?: string | null
+          full_name: string
+          grade: string
+          guardian_name?: string | null
+          id?: string
+          institution_id: string
+          phone?: string | null
+          photo_url?: string | null
+          section: string
+          status?: Database["public"]["Enums"]["student_status"]
+          updated_at?: string
+        }
+        Update: {
+          birth_date?: string | null
+          created_at?: string
+          created_by?: string
+          dni?: string | null
+          email?: string | null
+          full_name?: string
+          grade?: string
+          guardian_name?: string | null
+          id?: string
+          institution_id?: string
+          phone?: string | null
+          photo_url?: string | null
+          section?: string
+          status?: Database["public"]["Enums"]["student_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "students_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -122,6 +184,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      current_user_institution: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -150,6 +213,7 @@ export type Database = {
         | "preparatoria"
         | "universidad"
         | "otro"
+      student_status: "activo" | "inactivo"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -286,6 +350,7 @@ export const Constants = {
         "universidad",
         "otro",
       ],
+      student_status: ["activo", "inactivo"],
     },
   },
 } as const
