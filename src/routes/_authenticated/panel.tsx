@@ -186,11 +186,7 @@ function DirectorDashboard() {
                     {enabled ? "Abrir" : "Próximamente"}
                   </span>
                 </div>
-                <p className="mt-3 text-xs text-muted-foreground">
-                  {enabled
-                    ? "Registra, busca y organiza a los estudiantes."
-                    : "Este módulo estará disponible en un próximo paso."}
-                </p>
+                <p className="mt-3 text-xs text-muted-foreground">{desc}</p>
               </>
             );
             return enabled ? (
