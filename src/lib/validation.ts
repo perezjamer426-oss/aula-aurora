@@ -122,6 +122,53 @@ export const studentSchema = z.object({
   status: studentStatusSchema,
 });
 
+export const teacherStatusSchema = z.enum(["pendiente", "activo", "inactivo"]);
+
+export const teacherSchema = z.object({
+  fullName: z
+    .string()
+    .trim()
+    .min(2, "Ingresa el nombre completo")
+    .max(160, "El nombre es demasiado largo"),
+  email: z
+    .string()
+    .trim()
+    .min(1, "El correo es obligatorio")
+    .email("Ingresa un correo válido")
+    .max(160, "El correo es demasiado largo"),
+  phone: z
+    .string()
+    .trim()
+    .max(40, "El teléfono es demasiado largo")
+    .optional()
+    .or(z.literal("")),
+  subjects: z
+    .string()
+    .trim()
+    .max(400, "Demasiadas materias")
+    .optional()
+    .or(z.literal("")),
+  status: teacherStatusSchema,
+});
+
+export const teacherSignupSchema = z
+  .object({
+    code: z
+      .string()
+      .trim()
+      .min(1, "Ingresa el código de invitación")
+      .max(40, "Código demasiado largo"),
+    email: emailSchema,
+    password: passwordSchema,
+    confirmPassword: z.string().min(1, "Confirma tu contraseña"),
+  })
+  .refine((v) => v.password === v.confirmPassword, {
+    message: "Las contraseñas no coinciden",
+    path: ["confirmPassword"],
+  });
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type StudentInput = z.infer<typeof studentSchema>;
+export type TeacherInput = z.infer<typeof teacherSchema>;
+export type TeacherSignupInput = z.infer<typeof teacherSignupSchema>;
