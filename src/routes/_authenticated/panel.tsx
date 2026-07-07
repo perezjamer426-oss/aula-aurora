@@ -28,6 +28,22 @@ function DirectorDashboard() {
   useEffect(() => {
     let cancelled = false;
     async function load() {
+      const { data: authData } = await supabase.auth.getUser();
+      const uid = authData.user?.id;
+
+      // Comprobar rol: si es docente, redirigir a su panel.
+      if (uid) {
+        const { data: roles } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", uid);
+        const rolesList = (roles ?? []).map((r) => r.role);
+        if (!rolesList.includes("director") && rolesList.includes("teacher")) {
+          navigate({ to: "/panel-docente", replace: true });
+          return;
+        }
+      }
+
       const { data, error } = await supabase
         .from("profiles")
         .select(
@@ -58,7 +74,7 @@ function DirectorDashboard() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [navigate]);
 
   async function handleSignOut() {
     setSigningOut(true);
@@ -148,10 +164,10 @@ function DirectorDashboard() {
 
         <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-3">
           {[
-            { label: "Profesores", to: null as string | null },
-            { label: "Estudiantes", to: "/estudiantes" },
-            { label: "Asistencia", to: null },
-          ].map(({ label, to }) => {
+            { label: "Profesores", to: "/docentes" as string | null, desc: "Invita y gestiona a tu equipo docente." },
+            { label: "Estudiantes", to: "/estudiantes", desc: "Registra, busca y organiza a los estudiantes." },
+            { label: "Asistencia", to: null, desc: "Este módulo estará disponible en un próximo paso." },
+          ].map(({ label, to, desc }) => {
             const enabled = Boolean(to);
             const content = (
               <>
