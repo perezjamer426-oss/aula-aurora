@@ -147,6 +147,110 @@ export type Database = {
           },
         ]
       }
+      teacher_invitations: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string
+          expires_at: string
+          id: string
+          institution_id: string
+          teacher_id: string
+          used_at: string | null
+          used_by: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by: string
+          expires_at: string
+          id?: string
+          institution_id: string
+          teacher_id: string
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string
+          expires_at?: string
+          id?: string
+          institution_id?: string
+          teacher_id?: string
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teacher_invitations_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teacher_invitations_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "teachers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teachers: {
+        Row: {
+          created_at: string
+          created_by: string
+          email: string
+          full_name: string
+          id: string
+          institution_id: string
+          phone: string | null
+          photo_url: string | null
+          status: Database["public"]["Enums"]["teacher_status"]
+          subjects: string[]
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          email: string
+          full_name: string
+          id?: string
+          institution_id: string
+          phone?: string | null
+          photo_url?: string | null
+          status?: Database["public"]["Enums"]["teacher_status"]
+          subjects?: string[]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          email?: string
+          full_name?: string
+          id?: string
+          institution_id?: string
+          phone?: string | null
+          photo_url?: string | null
+          status?: Database["public"]["Enums"]["teacher_status"]
+          subjects?: string[]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teachers_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -184,13 +288,44 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_teacher_with_invitation: {
+        Args: {
+          _email: string
+          _full_name: string
+          _phone: string
+          _subjects: string[]
+        }
+        Returns: {
+          expires_at: string
+          invitation_code: string
+          teacher_id: string
+        }[]
+      }
       current_user_institution: { Args: never; Returns: string }
+      generate_teacher_invitation_code: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      preview_teacher_invitation: {
+        Args: { _code: string }
+        Returns: {
+          expires_at: string
+          institution_name: string
+          status: string
+          teacher_name: string
+        }[]
+      }
+      redeem_teacher_invitation: { Args: { _code: string }; Returns: string }
+      regenerate_teacher_invitation: {
+        Args: { _teacher_id: string }
+        Returns: {
+          expires_at: string
+          invitation_code: string
+        }[]
       }
       register_director_institution: {
         Args: {
@@ -214,6 +349,7 @@ export type Database = {
         | "universidad"
         | "otro"
       student_status: "activo" | "inactivo"
+      teacher_status: "pendiente" | "activo" | "inactivo"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -351,6 +487,7 @@ export const Constants = {
         "otro",
       ],
       student_status: ["activo", "inactivo"],
+      teacher_status: ["pendiente", "activo", "inactivo"],
     },
   },
 } as const
