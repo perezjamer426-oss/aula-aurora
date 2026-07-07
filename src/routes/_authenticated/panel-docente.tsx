@@ -1,0 +1,185 @@
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Logo } from "@/components/brand/Logo";
+import { supabase } from "@/integrations/supabase/client";
+
+/** Panel del docente — vista con módulos vacíos. */
+export const Route = createFileRoute("/_authenticated/panel-docente")({
+  component: TeacherDashboard,
+});
+
+interface TeacherProfile {
+  full_name: string;
+  email: string;
+  institution_name: string | null;
+}
+
+const modules: Array<{
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  available: boolean;
+}> = [
+  {
+    title: "Mis clases",
+    description: "Las aulas asignadas por el director.",
+    available: false,
+    icon: (
+      <path d="M4 5h16v14H4zM4 9h16M9 5v14" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+    ),
+  },
+  {
+    title: "Horario de hoy",
+    description: "Tu agenda del día, clase por clase.",
+    available: false,
+    icon: (
+      <path d="M12 8v4l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+    ),
+  },
+  {
+    title: "Asistencia",
+    description: "Registra presente, tarde o ausente.",
+    available: false,
+    icon: (
+      <path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+    ),
+  },
+  {
+    title: "Estudiantes",
+    description: "Los estudiantes asignados a tus aulas.",
+    available: false,
+    icon: (
+      <path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+    ),
+  },
+  {
+    title: "Evaluaciones",
+    description: "Crea y califica evaluaciones.",
+    available: false,
+    icon: (
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M9 15l2 2 4-4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+    ),
+  },
+  {
+    title: "Anuncios",
+    description: "Comunicados de la dirección.",
+    available: false,
+    icon: (
+      <path d="M11 5v14l-6-4H3a1 1 0 0 1-1-1V10a1 1 0 0 1 1-1h2zM15 8a5 5 0 0 1 0 8M18 5a9 9 0 0 1 0 14" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+    ),
+  },
+  {
+    title: "Mi perfil",
+    description: "Datos personales y contraseña.",
+    available: false,
+    icon: (
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+    ),
+  },
+];
+
+function TeacherDashboard() {
+  const navigate = useNavigate();
+  const [profile, setProfile] = useState<TeacherProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [signingOut, setSigningOut] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      const { data } = await supabase
+        .from("profiles")
+        .select("full_name, email, institution:institutions(name)")
+        .maybeSingle();
+      if (cancelled) return;
+      const inst = Array.isArray(data?.institution)
+        ? data?.institution[0]
+        : (data?.institution as { name?: string } | null);
+      setProfile({
+        full_name: data?.full_name ?? "",
+        email: data?.email ?? "",
+        institution_name: inst?.name ?? null,
+      });
+      setLoading(false);
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function handleSignOut() {
+    setSigningOut(true);
+    await supabase.auth.signOut();
+    navigate({ to: "/iniciar-sesion", replace: true });
+  }
+
+  const firstName = profile?.full_name?.split(" ")[0] ?? "";
+
+  return (
+    <div className="relative min-h-screen bg-background">
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[380px] bg-radial-primary" />
+
+      <header className="relative z-10 border-b border-border/60 bg-background/60 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+          <Logo />
+          <div className="flex items-center gap-3">
+            <div className="hidden text-right sm:block">
+              <p className="text-sm font-medium text-foreground">
+                {profile?.institution_name ?? "Cargando…"}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {profile?.full_name ?? profile?.email ?? ""} · Docente
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleSignOut}
+              disabled={signingOut}
+              className="inline-flex h-9 items-center justify-center gap-1.5 rounded-full border border-border bg-background px-3.5 text-xs font-medium text-foreground transition-colors hover:bg-accent disabled:opacity-60"
+            >
+              Cerrar sesión
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="relative z-10 mx-auto max-w-6xl px-6 pt-10 pb-16">
+        <div className="flex flex-col gap-1 animate-fade-in">
+          <p className="text-sm font-medium text-primary">Panel del docente</p>
+          <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            {loading ? "Cargando…" : firstName ? `Hola, ${firstName}` : "Hola"}
+          </h1>
+          <p className="mt-2 max-w-xl text-sm text-muted-foreground">
+            Aquí verás tus clases, horario y estudiantes cuando el director te asigne aulas.
+          </p>
+        </div>
+
+        <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {modules.map((m, idx) => (
+            <article
+              key={m.title}
+              style={{ animationDelay: `${idx * 40}ms` }}
+              className="group relative animate-fade-in rounded-2xl border border-border bg-card p-5 shadow-xs transition-all hover:-translate-y-0.5 hover:border-primary/30"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
+                  <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden>
+                    {m.icon}
+                  </svg>
+                </div>
+                <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                  Próximamente
+                </span>
+              </div>
+              <h3 className="mt-4 font-display text-sm font-semibold text-foreground">
+                {m.title}
+              </h3>
+              <p className="mt-1 text-xs text-muted-foreground">{m.description}</p>
+            </article>
+          ))}
+        </div>
+      </main>
+    </div>
+  );
+}
