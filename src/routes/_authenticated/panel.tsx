@@ -2,6 +2,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Logo } from "@/components/brand/Logo";
 import { supabase } from "@/integrations/supabase/client";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { StatCard } from "@/components/dashboard/StatCard";
+import { AttendanceChart } from "@/components/attendance/AttendanceChart";
 
 interface DirectorProfile {
   full_name: string;
@@ -14,6 +17,24 @@ interface DirectorProfile {
   } | null;
 }
 
+interface Stats {
+  total_students: number;
+  total_teachers: number;
+  total_classrooms: number;
+  today_sessions: number;
+  today_pct: number;
+  pending_classrooms: number;
+  today_late: number;
+  today_absent: number;
+}
+
+interface ChartPoint {
+  day: string;
+  attendance_pct: number;
+  total_records: number;
+}
+
+
 /** Pantalla 5: Panel del director (vacío intencional). */
 export const Route = createFileRoute("/_authenticated/panel")({
   component: DirectorDashboard,
@@ -22,6 +43,8 @@ export const Route = createFileRoute("/_authenticated/panel")({
 function DirectorDashboard() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<DirectorProfile | null>(null);
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [chart, setChart] = useState<ChartPoint[]>([]);
   const [loading, setLoading] = useState(true);
   const [signingOut, setSigningOut] = useState(false);
 
@@ -69,6 +92,15 @@ function DirectorDashboard() {
           : null,
       );
       setLoading(false);
+
+      // Cargar estadísticas y gráfico en paralelo
+      const [statsRes, chartRes] = await Promise.all([
+        supabase.rpc("director_dashboard_stats"),
+        supabase.rpc("attendance_last_7_days"),
+      ]);
+      if (cancelled) return;
+      if (statsRes.data?.[0]) setStats(statsRes.data[0] as Stats);
+      if (chartRes.data) setChart(chartRes.data as ChartPoint[]);
     }
     load();
     return () => {
@@ -103,21 +135,13 @@ function DirectorDashboard() {
                 {profile?.full_name ?? profile?.email ?? ""}
               </p>
             </div>
+            <NotificationBell />
             <button
               type="button"
               onClick={handleSignOut}
               disabled={signingOut}
               className="inline-flex h-9 items-center justify-center gap-1.5 rounded-full border border-border bg-background px-3.5 text-xs font-medium text-foreground transition-colors hover:bg-accent disabled:opacity-60"
             >
-              <svg viewBox="0 0 20 20" fill="none" className="h-3.5 w-3.5" aria-hidden>
-                <path
-                  d="M12 4h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-3M9 13l3-3-3-3M12 10H3"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
               Cerrar sesión
             </button>
           </div>
@@ -135,79 +159,77 @@ function DirectorDashboard() {
                 : "Hola"}
           </h1>
           <p className="mt-2 max-w-xl text-sm text-muted-foreground">
-            Este es el punto de partida de tu institución. Aún no hay nada aquí —
-            los módulos aparecerán conforme los construyamos, paso a paso.
+            Resumen en vivo de tu institución.
           </p>
         </div>
 
-        {/* Estado vacío intencional — no hay datos, ni de ejemplo. */}
-        <div className="mt-10 rounded-3xl border border-dashed border-border bg-card/60 p-10 text-center shadow-xs">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-soft text-primary">
-            <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden>
-              <path
-                d="M12 5v14M5 12h14"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="round"
-              />
-            </svg>
+        {/* Widgets principales */}
+        <div className="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <StatCard label="Estudiantes" value={stats?.total_students ?? 0} tone="primary" />
+          <StatCard label="Docentes" value={stats?.total_teachers ?? 0} tone="primary" />
+          <StatCard label="Aulas" value={stats?.total_classrooms ?? 0} tone="primary" />
+          <StatCard
+            label="Asistencia hoy"
+            value={`${stats?.today_pct ?? 0}%`}
+            hint={`${stats?.today_sessions ?? 0} aulas`}
+            tone="primary"
+          />
+        </div>
+
+        <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <StatCard label="Tardanzas hoy" value={stats?.today_late ?? 0} tone="warn" />
+          <StatCard label="Ausencias hoy" value={stats?.today_absent ?? 0} tone="danger" />
+          <StatCard
+            label="Aulas pendientes"
+            value={stats?.pending_classrooms ?? 0}
+            hint="sin asistencia hoy"
+            tone="warn"
+          />
+          <StatCard label="Institución" value={profile?.institution?.name ?? "—"} />
+        </div>
+
+        {/* Gráfico */}
+        <section className="mt-8 rounded-2xl border border-border bg-card p-5 shadow-xs">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="font-display text-sm font-semibold text-foreground">
+                Asistencia últimos 7 días
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                Porcentaje de asistencia efectiva por día.
+              </p>
+            </div>
           </div>
-          <h2 className="mt-5 font-display text-lg font-semibold text-foreground">
-            Tu institución está lista
-          </h2>
-          <p className="mx-auto mt-1.5 max-w-md text-sm text-muted-foreground">
-            {profile?.institution?.name
-              ? `«${profile.institution.name}» está creada y vacía. Los módulos de profesores, estudiantes y asistencia se activarán próximamente.`
-              : "Los módulos se activarán próximamente."}
-          </p>
+          <div className="mt-4">
+            <AttendanceChart data={chart} />
+          </div>
+        </section>
+
+        {/* Módulos */}
+        <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { label: "Docentes", to: "/docentes", desc: "Invita y gestiona a tu equipo." },
+            { label: "Estudiantes", to: "/estudiantes", desc: "Registra y organiza estudiantes." },
+            { label: "Aulas", to: "/aulas", desc: "Crea aulas y asigna estudiantes." },
+            { label: "Asistencia", to: "/asistencia", desc: "Supervisa la asistencia diaria." },
+          ].map(({ label, to, desc }) => (
+            <button
+              key={label}
+              type="button"
+              onClick={() => navigate({ to })}
+              className="group rounded-2xl border border-border bg-card p-5 text-left transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[var(--shadow-glow)]"
+            >
+              <div className="flex items-center justify-between">
+                <h3 className="font-display text-sm font-semibold text-foreground">{label}</h3>
+                <span className="rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary">
+                  Abrir
+                </span>
+              </div>
+              <p className="mt-3 text-xs text-muted-foreground">{desc}</p>
+            </button>
+          ))}
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          {[
-            { label: "Profesores", to: "/docentes" as string | null, desc: "Invita y gestiona a tu equipo docente." },
-            { label: "Estudiantes", to: "/estudiantes", desc: "Registra, busca y organiza a los estudiantes." },
-            { label: "Asistencia", to: null, desc: "Este módulo estará disponible en un próximo paso." },
-          ].map(({ label, to, desc }) => {
-            const enabled = Boolean(to);
-            const content = (
-              <>
-                <div className="flex items-center justify-between">
-                  <h3 className="font-display text-sm font-semibold text-foreground">
-                    {label}
-                  </h3>
-                  <span
-                    className={
-                      "rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider " +
-                      (enabled
-                        ? "bg-primary-soft text-primary"
-                        : "bg-muted text-muted-foreground")
-                    }
-                  >
-                    {enabled ? "Abrir" : "Próximamente"}
-                  </span>
-                </div>
-                <p className="mt-3 text-xs text-muted-foreground">{desc}</p>
-              </>
-            );
-            return enabled ? (
-              <button
-                key={label}
-                type="button"
-                onClick={() => navigate({ to: to! })}
-                className="group rounded-2xl border border-border bg-card p-5 text-left transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[var(--shadow-glow)]"
-              >
-                {content}
-              </button>
-            ) : (
-              <article
-                key={label}
-                className="rounded-2xl border border-border bg-card p-5 opacity-70"
-              >
-                {content}
-              </article>
-            );
-          })}
-        </div>
 
       </main>
     </div>

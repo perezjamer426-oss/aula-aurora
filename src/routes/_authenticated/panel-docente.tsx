@@ -17,65 +17,12 @@ interface TeacherProfile {
 const modules: Array<{
   title: string;
   description: string;
-  icon: React.ReactNode;
-  available: boolean;
+  to: string | null;
 }> = [
-  {
-    title: "Mis clases",
-    description: "Las aulas asignadas por el director.",
-    available: false,
-    icon: (
-      <path d="M4 5h16v14H4zM4 9h16M9 5v14" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-    ),
-  },
-  {
-    title: "Horario de hoy",
-    description: "Tu agenda del día, clase por clase.",
-    available: false,
-    icon: (
-      <path d="M12 8v4l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-    ),
-  },
-  {
-    title: "Asistencia",
-    description: "Registra presente, tarde o ausente.",
-    available: false,
-    icon: (
-      <path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-    ),
-  },
-  {
-    title: "Estudiantes",
-    description: "Los estudiantes asignados a tus aulas.",
-    available: false,
-    icon: (
-      <path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-    ),
-  },
-  {
-    title: "Evaluaciones",
-    description: "Crea y califica evaluaciones.",
-    available: false,
-    icon: (
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M9 15l2 2 4-4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-    ),
-  },
-  {
-    title: "Anuncios",
-    description: "Comunicados de la dirección.",
-    available: false,
-    icon: (
-      <path d="M11 5v14l-6-4H3a1 1 0 0 1-1-1V10a1 1 0 0 1 1-1h2zM15 8a5 5 0 0 1 0 8M18 5a9 9 0 0 1 0 14" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-    ),
-  },
-  {
-    title: "Mi perfil",
-    description: "Datos personales y contraseña.",
-    available: false,
-    icon: (
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-    ),
-  },
+  { title: "Asistencia", description: "Toma asistencia rápida de tus aulas.", to: "/asistencia" },
+  { title: "Historial", description: "Revisa la asistencia registrada.", to: "/asistencia-historial" },
+  { title: "Estudiantes", description: "Estudiantes de tus aulas.", to: "/estudiantes" },
+  { title: "Notificaciones", description: "Actividad reciente de tu institución.", to: "/notificaciones" },
 ];
 
 function TeacherDashboard() {
@@ -157,26 +104,24 @@ function TeacherDashboard() {
 
         <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {modules.map((m, idx) => (
-            <article
+            <button
               key={m.title}
+              type="button"
+              onClick={() => m.to && navigate({ to: m.to })}
+              disabled={!m.to}
               style={{ animationDelay: `${idx * 40}ms` }}
-              className="group relative animate-fade-in rounded-2xl border border-border bg-card p-5 shadow-xs transition-all hover:-translate-y-0.5 hover:border-primary/30"
+              className="group relative animate-fade-in rounded-2xl border border-border bg-card p-5 text-left shadow-xs transition-all hover:-translate-y-0.5 hover:border-primary/30 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <div className="flex items-start justify-between">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
-                  <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden>
-                    {m.icon}
-                  </svg>
-                </div>
-                <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                  Próximamente
+                <h3 className="font-display text-sm font-semibold text-foreground">
+                  {m.title}
+                </h3>
+                <span className="rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary">
+                  Abrir
                 </span>
               </div>
-              <h3 className="mt-4 font-display text-sm font-semibold text-foreground">
-                {m.title}
-              </h3>
-              <p className="mt-1 text-xs text-muted-foreground">{m.description}</p>
-            </article>
+              <p className="mt-3 text-xs text-muted-foreground">{m.description}</p>
+            </button>
           ))}
         </div>
       </main>

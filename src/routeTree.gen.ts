@@ -17,8 +17,13 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedPanelDocenteRouteImport } from './routes/_authenticated/panel-docente'
 import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
+import { Route as AuthenticatedNotificacionesRouteImport } from './routes/_authenticated/notificaciones'
 import { Route as AuthenticatedEstudiantesRouteImport } from './routes/_authenticated/estudiantes'
 import { Route as AuthenticatedDocentesRouteImport } from './routes/_authenticated/docentes'
+import { Route as AuthenticatedAulasRouteImport } from './routes/_authenticated/aulas'
+import { Route as AuthenticatedAsistenciaHistorialRouteImport } from './routes/_authenticated/asistencia-historial'
+import { Route as AuthenticatedAsistenciaRouteImport } from './routes/_authenticated/asistencia'
+import { Route as AuthenticatedAsistenciaClassroomIdRouteImport } from './routes/_authenticated/asistencia.$classroomId'
 
 const RegistrarInstitucionRoute = RegistrarInstitucionRouteImport.update({
   id: '/registrar-institucion',
@@ -60,6 +65,12 @@ const AuthenticatedPanelRoute = AuthenticatedPanelRouteImport.update({
   path: '/panel',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedNotificacionesRoute =
+  AuthenticatedNotificacionesRouteImport.update({
+    id: '/notificaciones',
+    path: '/notificaciones',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedEstudiantesRoute =
   AuthenticatedEstudiantesRouteImport.update({
     id: '/estudiantes',
@@ -71,6 +82,28 @@ const AuthenticatedDocentesRoute = AuthenticatedDocentesRouteImport.update({
   path: '/docentes',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAulasRoute = AuthenticatedAulasRouteImport.update({
+  id: '/aulas',
+  path: '/aulas',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAsistenciaHistorialRoute =
+  AuthenticatedAsistenciaHistorialRouteImport.update({
+    id: '/asistencia-historial',
+    path: '/asistencia-historial',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAsistenciaRoute = AuthenticatedAsistenciaRouteImport.update({
+  id: '/asistencia',
+  path: '/asistencia',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAsistenciaClassroomIdRoute =
+  AuthenticatedAsistenciaClassroomIdRouteImport.update({
+    id: '/$classroomId',
+    path: '/$classroomId',
+    getParentRoute: () => AuthenticatedAsistenciaRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -78,10 +111,15 @@ export interface FileRoutesByFullPath {
   '/iniciar-sesion': typeof IniciarSesionRoute
   '/registrar-docente': typeof RegistrarDocenteRoute
   '/registrar-institucion': typeof RegistrarInstitucionRoute
+  '/asistencia': typeof AuthenticatedAsistenciaRouteWithChildren
+  '/asistencia-historial': typeof AuthenticatedAsistenciaHistorialRoute
+  '/aulas': typeof AuthenticatedAulasRoute
   '/docentes': typeof AuthenticatedDocentesRoute
   '/estudiantes': typeof AuthenticatedEstudiantesRoute
+  '/notificaciones': typeof AuthenticatedNotificacionesRoute
   '/panel': typeof AuthenticatedPanelRoute
   '/panel-docente': typeof AuthenticatedPanelDocenteRoute
+  '/asistencia/$classroomId': typeof AuthenticatedAsistenciaClassroomIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -89,10 +127,15 @@ export interface FileRoutesByTo {
   '/iniciar-sesion': typeof IniciarSesionRoute
   '/registrar-docente': typeof RegistrarDocenteRoute
   '/registrar-institucion': typeof RegistrarInstitucionRoute
+  '/asistencia': typeof AuthenticatedAsistenciaRouteWithChildren
+  '/asistencia-historial': typeof AuthenticatedAsistenciaHistorialRoute
+  '/aulas': typeof AuthenticatedAulasRoute
   '/docentes': typeof AuthenticatedDocentesRoute
   '/estudiantes': typeof AuthenticatedEstudiantesRoute
+  '/notificaciones': typeof AuthenticatedNotificacionesRoute
   '/panel': typeof AuthenticatedPanelRoute
   '/panel-docente': typeof AuthenticatedPanelDocenteRoute
+  '/asistencia/$classroomId': typeof AuthenticatedAsistenciaClassroomIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -102,10 +145,15 @@ export interface FileRoutesById {
   '/iniciar-sesion': typeof IniciarSesionRoute
   '/registrar-docente': typeof RegistrarDocenteRoute
   '/registrar-institucion': typeof RegistrarInstitucionRoute
+  '/_authenticated/asistencia': typeof AuthenticatedAsistenciaRouteWithChildren
+  '/_authenticated/asistencia-historial': typeof AuthenticatedAsistenciaHistorialRoute
+  '/_authenticated/aulas': typeof AuthenticatedAulasRoute
   '/_authenticated/docentes': typeof AuthenticatedDocentesRoute
   '/_authenticated/estudiantes': typeof AuthenticatedEstudiantesRoute
+  '/_authenticated/notificaciones': typeof AuthenticatedNotificacionesRoute
   '/_authenticated/panel': typeof AuthenticatedPanelRoute
   '/_authenticated/panel-docente': typeof AuthenticatedPanelDocenteRoute
+  '/_authenticated/asistencia/$classroomId': typeof AuthenticatedAsistenciaClassroomIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -115,10 +163,15 @@ export interface FileRouteTypes {
     | '/iniciar-sesion'
     | '/registrar-docente'
     | '/registrar-institucion'
+    | '/asistencia'
+    | '/asistencia-historial'
+    | '/aulas'
     | '/docentes'
     | '/estudiantes'
+    | '/notificaciones'
     | '/panel'
     | '/panel-docente'
+    | '/asistencia/$classroomId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -126,10 +179,15 @@ export interface FileRouteTypes {
     | '/iniciar-sesion'
     | '/registrar-docente'
     | '/registrar-institucion'
+    | '/asistencia'
+    | '/asistencia-historial'
+    | '/aulas'
     | '/docentes'
     | '/estudiantes'
+    | '/notificaciones'
     | '/panel'
     | '/panel-docente'
+    | '/asistencia/$classroomId'
   id:
     | '__root__'
     | '/'
@@ -138,10 +196,15 @@ export interface FileRouteTypes {
     | '/iniciar-sesion'
     | '/registrar-docente'
     | '/registrar-institucion'
+    | '/_authenticated/asistencia'
+    | '/_authenticated/asistencia-historial'
+    | '/_authenticated/aulas'
     | '/_authenticated/docentes'
     | '/_authenticated/estudiantes'
+    | '/_authenticated/notificaciones'
     | '/_authenticated/panel'
     | '/_authenticated/panel-docente'
+    | '/_authenticated/asistencia/$classroomId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -211,6 +274,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPanelRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/notificaciones': {
+      id: '/_authenticated/notificaciones'
+      path: '/notificaciones'
+      fullPath: '/notificaciones'
+      preLoaderRoute: typeof AuthenticatedNotificacionesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/estudiantes': {
       id: '/_authenticated/estudiantes'
       path: '/estudiantes'
@@ -225,19 +295,70 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDocentesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/aulas': {
+      id: '/_authenticated/aulas'
+      path: '/aulas'
+      fullPath: '/aulas'
+      preLoaderRoute: typeof AuthenticatedAulasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/asistencia-historial': {
+      id: '/_authenticated/asistencia-historial'
+      path: '/asistencia-historial'
+      fullPath: '/asistencia-historial'
+      preLoaderRoute: typeof AuthenticatedAsistenciaHistorialRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/asistencia': {
+      id: '/_authenticated/asistencia'
+      path: '/asistencia'
+      fullPath: '/asistencia'
+      preLoaderRoute: typeof AuthenticatedAsistenciaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/asistencia/$classroomId': {
+      id: '/_authenticated/asistencia/$classroomId'
+      path: '/$classroomId'
+      fullPath: '/asistencia/$classroomId'
+      preLoaderRoute: typeof AuthenticatedAsistenciaClassroomIdRouteImport
+      parentRoute: typeof AuthenticatedAsistenciaRoute
+    }
   }
 }
 
+interface AuthenticatedAsistenciaRouteChildren {
+  AuthenticatedAsistenciaClassroomIdRoute: typeof AuthenticatedAsistenciaClassroomIdRoute
+}
+
+const AuthenticatedAsistenciaRouteChildren: AuthenticatedAsistenciaRouteChildren =
+  {
+    AuthenticatedAsistenciaClassroomIdRoute:
+      AuthenticatedAsistenciaClassroomIdRoute,
+  }
+
+const AuthenticatedAsistenciaRouteWithChildren =
+  AuthenticatedAsistenciaRoute._addFileChildren(
+    AuthenticatedAsistenciaRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAsistenciaRoute: typeof AuthenticatedAsistenciaRouteWithChildren
+  AuthenticatedAsistenciaHistorialRoute: typeof AuthenticatedAsistenciaHistorialRoute
+  AuthenticatedAulasRoute: typeof AuthenticatedAulasRoute
   AuthenticatedDocentesRoute: typeof AuthenticatedDocentesRoute
   AuthenticatedEstudiantesRoute: typeof AuthenticatedEstudiantesRoute
+  AuthenticatedNotificacionesRoute: typeof AuthenticatedNotificacionesRoute
   AuthenticatedPanelRoute: typeof AuthenticatedPanelRoute
   AuthenticatedPanelDocenteRoute: typeof AuthenticatedPanelDocenteRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAsistenciaRoute: AuthenticatedAsistenciaRouteWithChildren,
+  AuthenticatedAsistenciaHistorialRoute: AuthenticatedAsistenciaHistorialRoute,
+  AuthenticatedAulasRoute: AuthenticatedAulasRoute,
   AuthenticatedDocentesRoute: AuthenticatedDocentesRoute,
   AuthenticatedEstudiantesRoute: AuthenticatedEstudiantesRoute,
+  AuthenticatedNotificacionesRoute: AuthenticatedNotificacionesRoute,
   AuthenticatedPanelRoute: AuthenticatedPanelRoute,
   AuthenticatedPanelDocenteRoute: AuthenticatedPanelDocenteRoute,
 }
@@ -256,13 +377,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
