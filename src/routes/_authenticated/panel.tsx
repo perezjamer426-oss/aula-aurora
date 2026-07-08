@@ -17,6 +17,24 @@ interface DirectorProfile {
   } | null;
 }
 
+interface Stats {
+  total_students: number;
+  total_teachers: number;
+  total_classrooms: number;
+  today_sessions: number;
+  today_pct: number;
+  pending_classrooms: number;
+  today_late: number;
+  today_absent: number;
+}
+
+interface ChartPoint {
+  day: string;
+  attendance_pct: number;
+  total_records: number;
+}
+
+
 /** Pantalla 5: Panel del director (vacío intencional). */
 export const Route = createFileRoute("/_authenticated/panel")({
   component: DirectorDashboard,
