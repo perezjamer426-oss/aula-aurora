@@ -92,6 +92,15 @@ function DirectorDashboard() {
           : null,
       );
       setLoading(false);
+
+      // Cargar estadísticas y gráfico en paralelo
+      const [statsRes, chartRes] = await Promise.all([
+        supabase.rpc("director_dashboard_stats"),
+        supabase.rpc("attendance_last_7_days"),
+      ]);
+      if (cancelled) return;
+      if (statsRes.data?.[0]) setStats(statsRes.data[0] as Stats);
+      if (chartRes.data) setChart(chartRes.data as ChartPoint[]);
     }
     load();
     return () => {
