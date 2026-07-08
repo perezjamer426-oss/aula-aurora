@@ -106,21 +106,13 @@ function DirectorDashboard() {
                 {profile?.full_name ?? profile?.email ?? ""}
               </p>
             </div>
+            <NotificationBell />
             <button
               type="button"
               onClick={handleSignOut}
               disabled={signingOut}
               className="inline-flex h-9 items-center justify-center gap-1.5 rounded-full border border-border bg-background px-3.5 text-xs font-medium text-foreground transition-colors hover:bg-accent disabled:opacity-60"
             >
-              <svg viewBox="0 0 20 20" fill="none" className="h-3.5 w-3.5" aria-hidden>
-                <path
-                  d="M12 4h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-3M9 13l3-3-3-3M12 10H3"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
               Cerrar sesión
             </button>
           </div>
