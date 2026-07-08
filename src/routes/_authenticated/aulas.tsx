@@ -393,18 +393,17 @@ function ClassroomFormDialog({
             />
           </div>
           <SelectField
-            label="Docente titular"
-            optional
+            label="Docente titular (opcional)"
             value={teacherId}
             onChange={(e) => setTeacherId(e.target.value)}
-          >
-            <option value="">Sin asignar</option>
-            {teachers.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.full_name} {t.status === "pendiente" ? "(pendiente)" : ""}
-              </option>
-            ))}
-          </SelectField>
+            options={[
+              { value: "", label: "Sin asignar" },
+              ...teachers.map((t) => ({
+                value: t.id,
+                label: `${t.full_name}${t.status === "pendiente" ? " (pendiente)" : ""}`,
+              })),
+            ]}
+          />
 
           <div className="flex justify-end gap-2 pt-2">
             <button
