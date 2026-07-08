@@ -14,6 +14,199 @@ export type Database = {
   }
   public: {
     Tables: {
+      attendance_records: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          session_id: string
+          status: Database["public"]["Enums"]["attendance_status"]
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          session_id: string
+          status: Database["public"]["Enums"]["attendance_status"]
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          session_id?: string
+          status?: Database["public"]["Enums"]["attendance_status"]
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_records_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "attendance_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_records_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      attendance_sessions: {
+        Row: {
+          classroom_id: string
+          created_at: string
+          date: string
+          id: string
+          institution_id: string
+          notes: string | null
+          taken_by: string
+          updated_at: string
+        }
+        Insert: {
+          classroom_id: string
+          created_at?: string
+          date?: string
+          id?: string
+          institution_id: string
+          notes?: string | null
+          taken_by: string
+          updated_at?: string
+        }
+        Update: {
+          classroom_id?: string
+          created_at?: string
+          date?: string
+          id?: string
+          institution_id?: string
+          notes?: string | null
+          taken_by?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_sessions_classroom_id_fkey"
+            columns: ["classroom_id"]
+            isOneToOne: false
+            referencedRelation: "classrooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_sessions_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      classroom_students: {
+        Row: {
+          assigned_by: string
+          classroom_id: string
+          created_at: string
+          id: string
+          institution_id: string
+          student_id: string
+        }
+        Insert: {
+          assigned_by: string
+          classroom_id: string
+          created_at?: string
+          id?: string
+          institution_id: string
+          student_id: string
+        }
+        Update: {
+          assigned_by?: string
+          classroom_id?: string
+          created_at?: string
+          id?: string
+          institution_id?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classroom_students_classroom_id_fkey"
+            columns: ["classroom_id"]
+            isOneToOne: false
+            referencedRelation: "classrooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "classroom_students_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "classroom_students_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: true
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      classrooms: {
+        Row: {
+          created_at: string
+          created_by: string
+          grade: string
+          homeroom_teacher_id: string | null
+          id: string
+          institution_id: string
+          name: string
+          section: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          grade: string
+          homeroom_teacher_id?: string | null
+          id?: string
+          institution_id: string
+          name: string
+          section: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          grade?: string
+          homeroom_teacher_id?: string | null
+          id?: string
+          institution_id?: string
+          name?: string
+          section?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classrooms_homeroom_teacher_id_fkey"
+            columns: ["homeroom_teacher_id"]
+            isOneToOne: false
+            referencedRelation: "teachers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "classrooms_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       institutions: {
         Row: {
           address: string | null
@@ -49,6 +242,50 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          institution_id: string
+          metadata: Json
+          read_at: string | null
+          recipient_user_id: string | null
+          title: string
+          type: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          institution_id: string
+          metadata?: Json
+          read_at?: string | null
+          recipient_user_id?: string | null
+          title: string
+          type: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          institution_id?: string
+          metadata?: Json
+          read_at?: string | null
+          recipient_user_id?: string | null
+          title?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -288,6 +525,34 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      attendance_last_7_days: {
+        Args: never
+        Returns: {
+          attendance_pct: number
+          day: string
+          total_records: number
+        }[]
+      }
+      attendance_stats_classroom: {
+        Args: { _classroom_id: string }
+        Returns: {
+          attendance_pct: number
+          last_date: string
+          total_sessions: number
+        }[]
+      }
+      attendance_stats_student: {
+        Args: { _student_id: string }
+        Returns: {
+          attendance_pct: number
+          ausente_count: number
+          justificado_count: number
+          last_date: string
+          presente_count: number
+          tardanza_count: number
+          total_sessions: number
+        }[]
+      }
       create_teacher_with_invitation: {
         Args: {
           _email: string
@@ -302,6 +567,20 @@ export type Database = {
         }[]
       }
       current_user_institution: { Args: never; Returns: string }
+      director_dashboard_stats: {
+        Args: never
+        Returns: {
+          pending_classrooms: number
+          today_absent: number
+          today_late: number
+          today_pct: number
+          today_present: number
+          today_sessions: number
+          total_classrooms: number
+          total_students: number
+          total_teachers: number
+        }[]
+      }
       generate_teacher_invitation_code: { Args: never; Returns: string }
       has_role: {
         Args: {
@@ -338,9 +617,19 @@ export type Database = {
         }
         Returns: string
       }
+      save_attendance: {
+        Args: {
+          _classroom_id: string
+          _date: string
+          _notes?: string
+          _records: Json
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "director" | "teacher" | "student"
+      attendance_status: "presente" | "tardanza" | "ausente" | "justificado"
       institution_type:
         | "preescolar"
         | "primaria"
@@ -478,6 +767,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["director", "teacher", "student"],
+      attendance_status: ["presente", "tardanza", "ausente", "justificado"],
       institution_type: [
         "preescolar",
         "primaria",
