@@ -43,6 +43,8 @@ export const Route = createFileRoute("/_authenticated/panel")({
 function DirectorDashboard() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<DirectorProfile | null>(null);
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [chart, setChart] = useState<ChartPoint[]>([]);
   const [loading, setLoading] = useState(true);
   const [signingOut, setSigningOut] = useState(false);
 
