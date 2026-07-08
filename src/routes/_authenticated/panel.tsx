@@ -2,6 +2,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Logo } from "@/components/brand/Logo";
 import { supabase } from "@/integrations/supabase/client";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { StatCard } from "@/components/dashboard/StatCard";
+import { AttendanceChart } from "@/components/attendance/AttendanceChart";
 
 interface DirectorProfile {
   full_name: string;
