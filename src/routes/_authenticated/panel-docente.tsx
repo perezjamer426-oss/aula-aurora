@@ -104,26 +104,24 @@ function TeacherDashboard() {
 
         <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {modules.map((m, idx) => (
-            <article
+            <button
               key={m.title}
+              type="button"
+              onClick={() => m.to && navigate({ to: m.to })}
+              disabled={!m.to}
               style={{ animationDelay: `${idx * 40}ms` }}
-              className="group relative animate-fade-in rounded-2xl border border-border bg-card p-5 shadow-xs transition-all hover:-translate-y-0.5 hover:border-primary/30"
+              className="group relative animate-fade-in rounded-2xl border border-border bg-card p-5 text-left shadow-xs transition-all hover:-translate-y-0.5 hover:border-primary/30 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <div className="flex items-start justify-between">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
-                  <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden>
-                    {m.icon}
-                  </svg>
-                </div>
-                <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                  Próximamente
+                <h3 className="font-display text-sm font-semibold text-foreground">
+                  {m.title}
+                </h3>
+                <span className="rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary">
+                  Abrir
                 </span>
               </div>
-              <h3 className="mt-4 font-display text-sm font-semibold text-foreground">
-                {m.title}
-              </h3>
-              <p className="mt-1 text-xs text-muted-foreground">{m.description}</p>
-            </article>
+              <p className="mt-3 text-xs text-muted-foreground">{m.description}</p>
+            </button>
           ))}
         </div>
       </main>
