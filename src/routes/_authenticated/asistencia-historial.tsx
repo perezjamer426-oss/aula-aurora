@@ -158,14 +158,11 @@ function AttendanceHistory() {
             label="Aula"
             value={classroomFilter}
             onChange={(e) => setClassroomFilter(e.target.value)}
-          >
-            <option value="">Todas</option>
-            {classrooms.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </SelectField>
+            options={[
+              { value: "", label: "Todas" },
+              ...classrooms.map((c) => ({ value: c.id, label: c.name })),
+            ]}
+          />
           <div className="space-y-1.5">
             <label className="text-sm font-medium text-foreground">Fecha</label>
             <input
