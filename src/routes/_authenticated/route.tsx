@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { AppNavigation } from "@/components/layout/AppNavigation";
 
 /**
  * Layout de rutas privadas. `ssr: false` porque la sesión de Supabase
@@ -18,5 +19,9 @@ export const Route = createFileRoute("/_authenticated")({
     }
     return { user: data.user };
   },
-  component: () => <Outlet />,
+  component: () => (
+    <AppNavigation>
+      <Outlet />
+    </AppNavigation>
+  ),
 });
