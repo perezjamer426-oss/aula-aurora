@@ -1,4 +1,4 @@
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 interface Point {
   day: string;
@@ -6,7 +6,7 @@ interface Point {
   total_records: number;
 }
 
-/** Gráfico simple de asistencia últimos 7 días. */
+/** Gráfico premium de asistencia últimos 7 días. */
 export function AttendanceChart({ data }: { data: Point[] }) {
   const chartData = data.map((d) => ({
     ...d,
@@ -17,44 +17,54 @@ export function AttendanceChart({ data }: { data: Point[] }) {
   }));
 
   return (
-    <div className="h-52 w-full">
+    <div className="h-56 w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData} margin={{ top: 10, right: 12, left: -20, bottom: 0 }}>
+        <AreaChart data={chartData} margin={{ top: 12, right: 12, left: -18, bottom: 0 }}>
           <defs>
             <linearGradient id="pctGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.35} />
-              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+              <stop offset="0%" stopColor="var(--color-primary)" stopOpacity={0.5} />
+              <stop offset="100%" stopColor="var(--color-primary)" stopOpacity={0} />
             </linearGradient>
           </defs>
+          <CartesianGrid
+            strokeDasharray="3 6"
+            stroke="var(--color-border)"
+            vertical={false}
+          />
           <XAxis
             dataKey="label"
-            tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+            tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
             domain={[0, 100]}
-            tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+            tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
             axisLine={false}
             tickLine={false}
             tickFormatter={(v) => `${v}%`}
           />
           <Tooltip
+            cursor={{ stroke: "var(--color-primary)", strokeOpacity: 0.2, strokeWidth: 2 }}
             contentStyle={{
               borderRadius: 12,
-              border: "1px solid hsl(var(--border))",
+              border: "1px solid var(--color-border)",
+              background: "var(--color-popover)",
+              color: "var(--color-popover-foreground)",
               fontSize: 12,
               padding: "8px 12px",
+              boxShadow: "var(--shadow-lg)",
             }}
             formatter={(v: number) => [`${v}%`, "Asistencia"]}
-            labelStyle={{ fontWeight: 500 }}
+            labelStyle={{ fontWeight: 600, color: "var(--color-foreground)" }}
           />
           <Area
             type="monotone"
             dataKey="attendance_pct"
-            stroke="hsl(var(--primary))"
-            strokeWidth={2}
+            stroke="var(--color-primary)"
+            strokeWidth={2.25}
             fill="url(#pctGradient)"
+            activeDot={{ r: 5, strokeWidth: 2, stroke: "var(--color-background)" }}
           />
         </AreaChart>
       </ResponsiveContainer>
