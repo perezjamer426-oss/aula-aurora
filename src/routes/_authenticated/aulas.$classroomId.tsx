@@ -96,7 +96,7 @@ function ClassroomDetail() {
       supabase
         .from("classroom_comfort_evaluations")
         .select(
-          "id, comfort_index, temperatura, ventilacion, iluminacion, ruido, limpieza, mobiliario, notes, created_at, evaluator:profiles!evaluated_by(full_name)",
+          "id, comfort_index, temperatura, ventilacion, iluminacion, ruido, limpieza, mobiliario, notes, created_at, evaluated_by",
         )
         .eq("classroom_id", classroomId)
         .order("created_at", { ascending: false })
@@ -116,10 +116,20 @@ function ClassroomDetail() {
       last_session_date: (lastRes.data as any)?.date ?? null,
     });
 
+    const rows = (comfortRes.data ?? []) as any[];
+    const evaluatorIds = Array.from(new Set(rows.map((r) => r.evaluated_by).filter(Boolean)));
+    const nameMap = new Map<string, string>();
+    if (evaluatorIds.length > 0) {
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("id, full_name")
+        .in("id", evaluatorIds);
+      (profs ?? []).forEach((p: any) => nameMap.set(p.id, p.full_name));
+    }
     setComfort(
-      ((comfortRes.data ?? []) as any[]).map((r) => ({
+      rows.map((r) => ({
         ...r,
-        evaluator_name: r.evaluator?.full_name ?? null,
+        evaluator_name: nameMap.get(r.evaluated_by) ?? null,
       })),
     );
     setLoading(false);
