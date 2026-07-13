@@ -1,8 +1,7 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import {
   LayoutDashboard,
-  GraduationCap,
-  Users,
+  UsersRound,
   School,
   ClipboardCheck,
   Bell,
@@ -26,8 +25,7 @@ interface NavItem {
 const NAV: NavItem[] = [
   { to: "/panel", label: "Centro de control", icon: LayoutDashboard, roles: ["director"] },
   { to: "/panel-docente", label: "Mi panel", icon: LayoutDashboard, roles: ["teacher"] },
-  { to: "/docentes", label: "Docentes", icon: GraduationCap, roles: ["director"] },
-  { to: "/estudiantes", label: "Estudiantes", icon: Users, roles: ["director", "teacher"] },
+  { to: "/personas", label: "Personas", icon: UsersRound, roles: ["director", "teacher"] },
   { to: "/aulas", label: "Aulas", icon: School, roles: ["director"] },
   { to: "/asistencia", label: "Asistencia", icon: ClipboardCheck, roles: ["director", "teacher"] },
   { to: "/asistencia-historial", label: "Historial", icon: History, roles: ["director", "teacher"] },
