@@ -107,6 +107,72 @@ export type Database = {
           },
         ]
       }
+      classroom_comfort_evaluations: {
+        Row: {
+          classroom_id: string
+          comfort_index: number
+          created_at: string
+          evaluated_by: string
+          id: string
+          iluminacion: Database["public"]["Enums"]["comfort_rating"]
+          institution_id: string
+          limpieza: Database["public"]["Enums"]["comfort_rating"]
+          mobiliario: Database["public"]["Enums"]["comfort_rating"]
+          notes: string | null
+          ruido: Database["public"]["Enums"]["comfort_rating"]
+          temperatura: Database["public"]["Enums"]["comfort_rating"]
+          updated_at: string
+          ventilacion: Database["public"]["Enums"]["comfort_rating"]
+        }
+        Insert: {
+          classroom_id: string
+          comfort_index: number
+          created_at?: string
+          evaluated_by: string
+          id?: string
+          iluminacion: Database["public"]["Enums"]["comfort_rating"]
+          institution_id: string
+          limpieza: Database["public"]["Enums"]["comfort_rating"]
+          mobiliario: Database["public"]["Enums"]["comfort_rating"]
+          notes?: string | null
+          ruido: Database["public"]["Enums"]["comfort_rating"]
+          temperatura: Database["public"]["Enums"]["comfort_rating"]
+          updated_at?: string
+          ventilacion: Database["public"]["Enums"]["comfort_rating"]
+        }
+        Update: {
+          classroom_id?: string
+          comfort_index?: number
+          created_at?: string
+          evaluated_by?: string
+          id?: string
+          iluminacion?: Database["public"]["Enums"]["comfort_rating"]
+          institution_id?: string
+          limpieza?: Database["public"]["Enums"]["comfort_rating"]
+          mobiliario?: Database["public"]["Enums"]["comfort_rating"]
+          notes?: string | null
+          ruido?: Database["public"]["Enums"]["comfort_rating"]
+          temperatura?: Database["public"]["Enums"]["comfort_rating"]
+          updated_at?: string
+          ventilacion?: Database["public"]["Enums"]["comfort_rating"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classroom_comfort_evaluations_classroom_id_fkey"
+            columns: ["classroom_id"]
+            isOneToOne: false
+            referencedRelation: "classrooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "classroom_comfort_evaluations_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       classroom_students: {
         Row: {
           assigned_by: string
@@ -553,6 +619,10 @@ export type Database = {
           total_sessions: number
         }[]
       }
+      comfort_rating_score: {
+        Args: { _r: Database["public"]["Enums"]["comfort_rating"] }
+        Returns: number
+      }
       create_teacher_with_invitation: {
         Args: {
           _email: string
@@ -630,6 +700,7 @@ export type Database = {
     Enums: {
       app_role: "director" | "teacher" | "student"
       attendance_status: "presente" | "tardanza" | "ausente" | "justificado"
+      comfort_rating: "excelente" | "bueno" | "regular" | "malo" | "muy_malo"
       institution_type:
         | "preescolar"
         | "primaria"
@@ -768,6 +839,7 @@ export const Constants = {
     Enums: {
       app_role: ["director", "teacher", "student"],
       attendance_status: ["presente", "tardanza", "ausente", "justificado"],
+      comfort_rating: ["excelente", "bueno", "regular", "malo", "muy_malo"],
       institution_type: [
         "preescolar",
         "primaria",

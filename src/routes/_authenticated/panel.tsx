@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
-  GraduationCap,
+  UsersRound,
   Users,
   School,
   ClipboardCheck,
@@ -216,7 +216,7 @@ function CentroDeControl() {
           delay={0}
         />
         <KpiCard
-          icon={<GraduationCap className="h-4 w-4" />}
+          icon={<UsersRound className="h-4 w-4" />}
           label="Docentes"
           value={stats?.total_teachers ?? 0}
           delay={60}
@@ -315,21 +315,15 @@ function CentroDeControl() {
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[
             {
-              label: "Docentes",
-              to: "/docentes",
-              desc: "Invita y gestiona a tu equipo.",
-              icon: GraduationCap,
-            },
-            {
-              label: "Estudiantes",
-              to: "/estudiantes",
-              desc: "Registra y organiza estudiantes.",
-              icon: Users,
+              label: "Personas",
+              to: "/personas",
+              desc: "Docentes y estudiantes en un solo módulo.",
+              icon: UsersRound,
             },
             {
               label: "Aulas",
               to: "/aulas",
-              desc: "Crea aulas y asigna estudiantes.",
+              desc: "Crea aulas, asigna estudiantes y evalúa el confort.",
               icon: School,
             },
             {
@@ -337,6 +331,12 @@ function CentroDeControl() {
               to: "/asistencia",
               desc: "Supervisa la asistencia diaria.",
               icon: ClipboardCheck,
+            },
+            {
+              label: "Historial",
+              to: "/asistencia-historial",
+              desc: "Consulta y filtra sesiones anteriores.",
+              icon: TrendingUp,
             },
           ].map(({ label, to, desc, icon: Icon }, i) => (
             <button
