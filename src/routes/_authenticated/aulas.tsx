@@ -188,7 +188,8 @@ function ClassroomsScreen() {
               {rows.map((r) => (
                 <article
                   key={r.id}
-                  className="group rounded-2xl border border-border bg-card p-5 shadow-xs transition-all hover:-translate-y-0.5 hover:border-primary/30"
+                  onClick={() => navigate({ to: "/aulas/$classroomId", params: { classroomId: r.id } })}
+                  className="group cursor-pointer rounded-2xl border border-border bg-card p-5 shadow-xs transition-all hover:-translate-y-0.5 hover:border-primary/30"
                 >
                   <div className="flex items-start justify-between">
                     <div>
@@ -217,7 +218,7 @@ function ClassroomsScreen() {
                     </div>
                   </dl>
 
-                  <div className="mt-4 flex flex-wrap gap-1.5">
+                  <div className="mt-4 flex flex-wrap gap-1.5" onClick={(e) => e.stopPropagation()}>
                     <button
                       type="button"
                       onClick={() => setStudentsOpen(r)}

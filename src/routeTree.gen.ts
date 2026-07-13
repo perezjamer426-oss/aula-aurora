@@ -15,6 +15,7 @@ import { Route as IniciarSesionRouteImport } from './routes/iniciar-sesion'
 import { Route as BienvenidaRouteImport } from './routes/bienvenida'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedPersonasRouteImport } from './routes/_authenticated/personas'
 import { Route as AuthenticatedPanelDocenteRouteImport } from './routes/_authenticated/panel-docente'
 import { Route as AuthenticatedPanelRouteImport } from './routes/_authenticated/panel'
 import { Route as AuthenticatedNotificacionesRouteImport } from './routes/_authenticated/notificaciones'
@@ -23,6 +24,7 @@ import { Route as AuthenticatedDocentesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAulasRouteImport } from './routes/_authenticated/aulas'
 import { Route as AuthenticatedAsistenciaHistorialRouteImport } from './routes/_authenticated/asistencia-historial'
 import { Route as AuthenticatedAsistenciaRouteImport } from './routes/_authenticated/asistencia'
+import { Route as AuthenticatedAulasClassroomIdRouteImport } from './routes/_authenticated/aulas.$classroomId'
 import { Route as AuthenticatedAsistenciaClassroomIdRouteImport } from './routes/_authenticated/asistencia.$classroomId'
 
 const RegistrarInstitucionRoute = RegistrarInstitucionRouteImport.update({
@@ -53,6 +55,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedPersonasRoute = AuthenticatedPersonasRouteImport.update({
+  id: '/personas',
+  path: '/personas',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedPanelDocenteRoute =
   AuthenticatedPanelDocenteRouteImport.update({
@@ -98,6 +105,12 @@ const AuthenticatedAsistenciaRoute = AuthenticatedAsistenciaRouteImport.update({
   path: '/asistencia',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAulasClassroomIdRoute =
+  AuthenticatedAulasClassroomIdRouteImport.update({
+    id: '/$classroomId',
+    path: '/$classroomId',
+    getParentRoute: () => AuthenticatedAulasRoute,
+  } as any)
 const AuthenticatedAsistenciaClassroomIdRoute =
   AuthenticatedAsistenciaClassroomIdRouteImport.update({
     id: '/$classroomId',
@@ -113,13 +126,15 @@ export interface FileRoutesByFullPath {
   '/registrar-institucion': typeof RegistrarInstitucionRoute
   '/asistencia': typeof AuthenticatedAsistenciaRouteWithChildren
   '/asistencia-historial': typeof AuthenticatedAsistenciaHistorialRoute
-  '/aulas': typeof AuthenticatedAulasRoute
+  '/aulas': typeof AuthenticatedAulasRouteWithChildren
   '/docentes': typeof AuthenticatedDocentesRoute
   '/estudiantes': typeof AuthenticatedEstudiantesRoute
   '/notificaciones': typeof AuthenticatedNotificacionesRoute
   '/panel': typeof AuthenticatedPanelRoute
   '/panel-docente': typeof AuthenticatedPanelDocenteRoute
+  '/personas': typeof AuthenticatedPersonasRoute
   '/asistencia/$classroomId': typeof AuthenticatedAsistenciaClassroomIdRoute
+  '/aulas/$classroomId': typeof AuthenticatedAulasClassroomIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -129,13 +144,15 @@ export interface FileRoutesByTo {
   '/registrar-institucion': typeof RegistrarInstitucionRoute
   '/asistencia': typeof AuthenticatedAsistenciaRouteWithChildren
   '/asistencia-historial': typeof AuthenticatedAsistenciaHistorialRoute
-  '/aulas': typeof AuthenticatedAulasRoute
+  '/aulas': typeof AuthenticatedAulasRouteWithChildren
   '/docentes': typeof AuthenticatedDocentesRoute
   '/estudiantes': typeof AuthenticatedEstudiantesRoute
   '/notificaciones': typeof AuthenticatedNotificacionesRoute
   '/panel': typeof AuthenticatedPanelRoute
   '/panel-docente': typeof AuthenticatedPanelDocenteRoute
+  '/personas': typeof AuthenticatedPersonasRoute
   '/asistencia/$classroomId': typeof AuthenticatedAsistenciaClassroomIdRoute
+  '/aulas/$classroomId': typeof AuthenticatedAulasClassroomIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -147,13 +164,15 @@ export interface FileRoutesById {
   '/registrar-institucion': typeof RegistrarInstitucionRoute
   '/_authenticated/asistencia': typeof AuthenticatedAsistenciaRouteWithChildren
   '/_authenticated/asistencia-historial': typeof AuthenticatedAsistenciaHistorialRoute
-  '/_authenticated/aulas': typeof AuthenticatedAulasRoute
+  '/_authenticated/aulas': typeof AuthenticatedAulasRouteWithChildren
   '/_authenticated/docentes': typeof AuthenticatedDocentesRoute
   '/_authenticated/estudiantes': typeof AuthenticatedEstudiantesRoute
   '/_authenticated/notificaciones': typeof AuthenticatedNotificacionesRoute
   '/_authenticated/panel': typeof AuthenticatedPanelRoute
   '/_authenticated/panel-docente': typeof AuthenticatedPanelDocenteRoute
+  '/_authenticated/personas': typeof AuthenticatedPersonasRoute
   '/_authenticated/asistencia/$classroomId': typeof AuthenticatedAsistenciaClassroomIdRoute
+  '/_authenticated/aulas/$classroomId': typeof AuthenticatedAulasClassroomIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -171,7 +190,9 @@ export interface FileRouteTypes {
     | '/notificaciones'
     | '/panel'
     | '/panel-docente'
+    | '/personas'
     | '/asistencia/$classroomId'
+    | '/aulas/$classroomId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -187,7 +208,9 @@ export interface FileRouteTypes {
     | '/notificaciones'
     | '/panel'
     | '/panel-docente'
+    | '/personas'
     | '/asistencia/$classroomId'
+    | '/aulas/$classroomId'
   id:
     | '__root__'
     | '/'
@@ -204,7 +227,9 @@ export interface FileRouteTypes {
     | '/_authenticated/notificaciones'
     | '/_authenticated/panel'
     | '/_authenticated/panel-docente'
+    | '/_authenticated/personas'
     | '/_authenticated/asistencia/$classroomId'
+    | '/_authenticated/aulas/$classroomId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -259,6 +284,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/personas': {
+      id: '/_authenticated/personas'
+      path: '/personas'
+      fullPath: '/personas'
+      preLoaderRoute: typeof AuthenticatedPersonasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/panel-docente': {
       id: '/_authenticated/panel-docente'
@@ -316,6 +348,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAsistenciaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/aulas/$classroomId': {
+      id: '/_authenticated/aulas/$classroomId'
+      path: '/$classroomId'
+      fullPath: '/aulas/$classroomId'
+      preLoaderRoute: typeof AuthenticatedAulasClassroomIdRouteImport
+      parentRoute: typeof AuthenticatedAulasRoute
+    }
     '/_authenticated/asistencia/$classroomId': {
       id: '/_authenticated/asistencia/$classroomId'
       path: '/$classroomId'
@@ -341,26 +380,39 @@ const AuthenticatedAsistenciaRouteWithChildren =
     AuthenticatedAsistenciaRouteChildren,
   )
 
+interface AuthenticatedAulasRouteChildren {
+  AuthenticatedAulasClassroomIdRoute: typeof AuthenticatedAulasClassroomIdRoute
+}
+
+const AuthenticatedAulasRouteChildren: AuthenticatedAulasRouteChildren = {
+  AuthenticatedAulasClassroomIdRoute: AuthenticatedAulasClassroomIdRoute,
+}
+
+const AuthenticatedAulasRouteWithChildren =
+  AuthenticatedAulasRoute._addFileChildren(AuthenticatedAulasRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAsistenciaRoute: typeof AuthenticatedAsistenciaRouteWithChildren
   AuthenticatedAsistenciaHistorialRoute: typeof AuthenticatedAsistenciaHistorialRoute
-  AuthenticatedAulasRoute: typeof AuthenticatedAulasRoute
+  AuthenticatedAulasRoute: typeof AuthenticatedAulasRouteWithChildren
   AuthenticatedDocentesRoute: typeof AuthenticatedDocentesRoute
   AuthenticatedEstudiantesRoute: typeof AuthenticatedEstudiantesRoute
   AuthenticatedNotificacionesRoute: typeof AuthenticatedNotificacionesRoute
   AuthenticatedPanelRoute: typeof AuthenticatedPanelRoute
   AuthenticatedPanelDocenteRoute: typeof AuthenticatedPanelDocenteRoute
+  AuthenticatedPersonasRoute: typeof AuthenticatedPersonasRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAsistenciaRoute: AuthenticatedAsistenciaRouteWithChildren,
   AuthenticatedAsistenciaHistorialRoute: AuthenticatedAsistenciaHistorialRoute,
-  AuthenticatedAulasRoute: AuthenticatedAulasRoute,
+  AuthenticatedAulasRoute: AuthenticatedAulasRouteWithChildren,
   AuthenticatedDocentesRoute: AuthenticatedDocentesRoute,
   AuthenticatedEstudiantesRoute: AuthenticatedEstudiantesRoute,
   AuthenticatedNotificacionesRoute: AuthenticatedNotificacionesRoute,
   AuthenticatedPanelRoute: AuthenticatedPanelRoute,
   AuthenticatedPanelDocenteRoute: AuthenticatedPanelDocenteRoute,
+  AuthenticatedPersonasRoute: AuthenticatedPersonasRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
